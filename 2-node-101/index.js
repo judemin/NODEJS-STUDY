@@ -1,3 +1,5 @@
+const { odd, even } = require("./module-example");
+
 function helloWorld() {
     console.log("Hello World!");
     helloNode();
@@ -8,3 +10,5 @@ function helloNode() {
 }
 
 helloWorld();
+console.log("I can get module variable");
+console.log(odd, even);
