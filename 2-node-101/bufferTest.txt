@@ -1,0 +1,7 @@
+I will be sent divided by several pieces.
+Those pieces are called 'chunk'.
+
+Hello World!
+Hello Node!
+Hello Stream!
+Hello Buffer!
