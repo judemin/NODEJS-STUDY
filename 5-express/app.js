@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const session = require('express-session');
 const fs = require('fs');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -20,11 +22,11 @@ app.use(cookieParser('cookiePassword'));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'sessionPassword',
+    secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true,
     },
-    name: 'sessionCookie'
+    name: process.env.COOKIE_SECRET
 }));
 
 // req.body parser, newer version of bodyparser
