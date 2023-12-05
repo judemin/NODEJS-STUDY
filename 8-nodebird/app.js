@@ -5,11 +5,17 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const passport = require('passport');
+const { sequelize } = require('./models')
 
 dotenv.config();
 const pageRouter = require('./routes/page');
+const authRouter = require('./routes/auth');
+const passportConfig = require('./passport');
 
 const app = express();
+passportConfig();
+
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
@@ -17,10 +23,19 @@ nunjucks.configure('views', {
     watch: true,
 });
 
+// force true : recreate all table, only in dev
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log("Successfully Connected to MySQL")
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // req.body from ajax json req
+app.use(express.urlencoded({ extended: false })); // from req.body form
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
@@ -31,9 +46,15 @@ app.use(session({
         secure: false,
     }
 }));
-
+// passport must be set under express session
+// req.user req.login req.isAuthenticate req.logout
+app.use(passport.initialize());
+// session cookie named connect.sid is sent to browser
+app.use(passport.session());
 
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
+
 app.use((req, res, next) => {
     const error = new Error('${req.method ${req.url} router not found}');
     error.status = 404;
