@@ -2,10 +2,11 @@
   "name": "nodebird",
   "version": "0.0.1",
   "description": "익스프레스로 만드는 SNS 서비스",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon app",
-    "test": "jest"
+    "start": "nodemon server.js",
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "ZeroCho",
   "license": "MIT",
@@ -22,11 +23,13 @@
     "passport": "^0.6.0",
     "passport-kakao": "^1.0.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.3.5",
+    "sequelize": "^6.35.1",
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
+    "artillery": "^2.0.3",
     "jest": "^29.7.0",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "supertest": "^6.3.3"
   }
 }

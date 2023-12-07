@@ -67,6 +67,5 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-app.listen(app.get('port'), () => {
-  console.log(app.get('port'), '번 포트에서 대기중');
-});
+// supertest를 위해 분리
+module.exports = app;
