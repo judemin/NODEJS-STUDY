@@ -60,8 +60,10 @@ app.use((req, res, next) => {
     error.status = 404;
     next(error);
 });
+
 app.use((err, req, res, next) => {
     res.locals.message = err.message;
+    console.log(err);
     // divide progeam into dev, production environment
     res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
     res.status(err.status || 500);

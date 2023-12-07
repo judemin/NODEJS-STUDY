@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require('bcrypt');
+const passport = require("passport");
 
 exports.join = async (req, res, next) => {
     const { nick, email, password } = req.body;
@@ -20,11 +21,28 @@ exports.join = async (req, res, next) => {
         next(error);
     }
 };
-
-exports.login = () => {
-
+// POST /auth/login
+exports.login = (req, res, next) => {
+    passport.authenticate('local', (authError, user, info) => {
+        if (authError) { // server fail
+            console.log(authError);
+            return next(authError);
+        } else if (!user) { // logic fail
+            return res.redirect('/?loginError=${info.message}');
+        }
+        return req.login(user, (loginError) => { // login success
+            if (loginError) {
+                console.log(loginError);
+                return next(loginError);
+            }
+            return res.redirect('/');
+        })
+        // middleware in middleware need (req, res, next)
+    })(req, res, next);
 };
 
-exports.logout = () => {
-
+exports.logout = (req, res) => {
+    req.logout(() => {
+        res.redirect('/');
+    });
 };

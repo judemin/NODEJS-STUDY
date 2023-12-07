@@ -20,8 +20,11 @@ exports.isNotLoggedIn = (req, res, next) => {
   }
 };
 
+// 자주 쓰이는 것들은  middleware의 index에 넣어두고 사용한다
+// JWT Token은 API 서버에서 정말 자주 쓰이기 때문에 미들웨어로 사용
 exports.verifyToken = (req, res, next) => {
   try {
+    // JWT Secret은 인감도장과 같아서 빼앗기면 안된다
     res.locals.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     return next();
   } catch (error) {
@@ -38,6 +41,7 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
+// api를 제한하는 로직을 구현할 수 있다
 exports.apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1분
   max: 10,
@@ -58,11 +62,13 @@ exports.deprecated = (req, res) => {
 
 exports.corsWhenDomainMatches = async (req, res, next) => {
   const domain = await Domain.findOne({
+    // new URL(req.get('origin')).host인 경우 http가 떨어진다
     where: { host: new URL(req.get('origin')).host },
   });
   if (domain) {
-    cors({ 
+    cors({
       origin: req.get('origin'),
+      // cookie를 함께 받고싶을 경우 credentials를 넣어준다
       credentials: true,
     })(req, res, next);
   } else {

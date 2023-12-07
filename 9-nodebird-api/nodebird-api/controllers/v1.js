@@ -4,6 +4,7 @@ const { Domain, User, Post, Hashtag } = require('../models');
 exports.createToken = async (req, res) => {
   const { clientSecret } = req.body;
   try {
+    // 도메인의 소유자를 찾는다
     const domain = await Domain.findOne({
       where: { clientSecret },
       include: {
@@ -21,6 +22,7 @@ exports.createToken = async (req, res) => {
       id: domain.User.id,
       nick: domain.User.nick,
     }, process.env.JWT_SECRET, {
+      // JWT 공식문서에서 기능들이 엄청 많다
       expiresIn: '1m', // 1분
       issuer: 'nodebird',
     });
